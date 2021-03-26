@@ -4,11 +4,15 @@
 import * as React from "react"
 import * as ReactDOM from "react-dom"
 
-const Hello = (props) => <div>Hello from React!</div>
+import dayjs from "dayjs"
+import relativeTime from "dayjs/plugin/relativeTime"
+dayjs.extend(relativeTime)
+
+import { ChatApp } from "./pages"
 
 document.addEventListener("DOMContentLoaded", () => {
   ReactDOM.render(
-    <Hello name="React" />,
+    <ChatApp />,
     document.body.appendChild(document.createElement("div"))
   )
 })
