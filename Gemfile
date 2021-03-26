@@ -23,6 +23,7 @@ gem 'webpacker', '~> 5.0'
 
 # Reduces boot times through caching; required in config/boot.rb
 # gem 'bootsnap', '>= 1.4.4', require: false
+gem 'graphql'
 
 gem 'mongoid', '~> 7.2.1'
 
