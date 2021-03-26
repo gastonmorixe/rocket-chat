@@ -5,4 +5,6 @@ class Channel
   field :name, type: String
   
   has_many :messages
+
+  index({ name: 1 }, { unique: true })
 end

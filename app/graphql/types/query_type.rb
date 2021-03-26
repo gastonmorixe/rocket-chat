@@ -1,27 +1,32 @@
 module Types
   class QueryType < Types::BaseObject
-    # Add `node(id: ID!) and `nodes(ids: [ID!]!)`
     include GraphQL::Types::Relay::HasNodeField
     include GraphQL::Types::Relay::HasNodesField
 
-    # Add root-level fields here.
-    # They will be entry points for queries on your schema.
+    #
+    # Channels 
+    # 
 
-    # field :test_field, String, null: false,
-    #   description: "An example field added by the generator"
-    # def test_field
-    #   "Hello World!"
-    # end
+    field :channels, [ChannelType], null: true do
+      description "List all Channels"
+    end
 
-    field :user, UserType, null: true do
-      description "Find a user by ID"
-      argument :id, ID, required: true
+    def channels
+      ListChannels.run!
+    end
+
+    #
+    # Messages 
+    # 
+
+    field :messages_for_channel, [MessageType], null: true do
+      description "Get Messages of a Channel given a Channel name"
+      argument :channel_name, String, required: true
     end
   
-    # Then provide an implementation:
-    def user(id:)
-      User.find(id)
+    def messages_for_channel(channel_name:)
+      ChannelMessages.run!(channel_name: channel_name)
     end
-  
+
   end
 end
