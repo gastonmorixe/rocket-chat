@@ -1,15 +1,25 @@
 import * as React from "react"
+import { BrowserRouter, Route, Switch } from "react-router-dom"
 
-import { Providers } from "../../providers/Providers"
-import { MessagesList } from "../../components/"
+import { Providers } from "../../providers"
+import { Channel } from "../Channel"
+import { Login } from "../Login"
 
 interface IChatApp {}
 
 export const ChatApp = React.memo<IChatApp>((props) => {
   return (
     <Providers>
-      <h1>Rocket Chat!</h1>
-      <MessagesList nickname="gaston" />
+      <BrowserRouter>
+        <Switch>
+          <Route
+            path="/channel/:nickname/:channelName"
+            component={Channel}
+            exact
+          />
+          <Route component={Login} />
+        </Switch>
+      </BrowserRouter>
     </Providers>
   )
 })

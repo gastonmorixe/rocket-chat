@@ -2,20 +2,21 @@ import * as React from "react"
 import styled from "styled-components"
 import { useQuery } from "@apollo/client"
 
-import { Message } from "../Message"
+import { Message } from "../"
 
 import MessageListQuery from "./MessageListQuery.graphql"
 
 interface IMessagesList {
   nickname: string
+  channelName: string
 }
 
 export const MessagesList = React.memo<IMessagesList>((props) => {
-  console.log(`[MessageList]`, { query })
+  console.log(`[MessageList]`, { props })
 
-  const { nickname } = props
+  const { nickname, channelName } = props
   const query = useQuery(MessageListQuery, {
-    variables: { channelName: "general" },
+    variables: { channelName },
   })
 
   if (query.loading) {
@@ -24,15 +25,22 @@ export const MessagesList = React.memo<IMessagesList>((props) => {
 
   return (
     <MessagesListWrapper>
-      {query.data.messagesForChannel.map((message) => {
+      {query.data.messagesForChannel.map((message, index, list) => {
         const isMine = nickname === message.createdBy.nickname
+        const isPrevSame =
+          index > 0 &&
+          list[index - 1].createdBy.nickname === message.createdBy.nickname
+        const isNextChange =
+          index < list.length - 1 &&
+          list[index + 1].createdBy.nickname !== message.createdBy.nickname
+        const isLast = list.length - 1 === index
         return (
           <Message
             key={message.id}
             content={message.content}
             createdAt={new Date(message.createdAt).valueOf()}
             authorNickname={message.createdBy.nickname}
-            {...{ isMine }}
+            {...{ isMine, isPrevSame, isNextChange, isLast }}
           />
         )
       })}
@@ -45,8 +53,4 @@ MessagesList.displayName = "MessagesList"
 const MessagesListWrapper = styled.div`
   display: flex;
   flex-direction: column;
-
-  & > * + * {
-    margin-top: 1rem;
-  }
 `
