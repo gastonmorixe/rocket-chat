@@ -3,7 +3,8 @@ class Message
   include Mongoid::Timestamps
   
   field :content, type: String
+  field :local_id, type: String
   
+  embedded_in :channel
   belongs_to :created_by, class_name: "User"
-  belongs_to :channel
 end

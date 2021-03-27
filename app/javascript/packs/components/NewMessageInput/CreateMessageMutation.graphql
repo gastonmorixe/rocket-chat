@@ -1,22 +1,23 @@
 mutation CreateMessage(
   $channelName: String!
   $content: String!
-  $nickname: String!
+  $nickname: ID!
+  $localId: ID!
 ) {
   createMessage(
     channelName: $channelName
     content: $content
     nickname: $nickname
+    localId: $localId
   ) {
     id
+    localId
     content
     createdAt
     createdBy {
-      id
       nickname
     }
     channel {
-      id
       name
     }
   }

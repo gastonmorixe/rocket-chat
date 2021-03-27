@@ -52,13 +52,15 @@ export const MessagesList = React.memo<IMessagesList>((props) => {
             index < list.length - 1 &&
             list[index + 1].createdBy.nickname !== message.createdBy.nickname
           const isLast = list.length - 1 === index
+          const isLocal = message.id.endsWith("_local")
+          const key = message.localId || message.id
           return (
             <Message
-              key={message.id}
+              key={key}
               content={message.content}
               createdAt={new Date(message.createdAt).valueOf()}
               authorNickname={message.createdBy.nickname}
-              {...{ isMine, isPrevSame, isNextChange, isLast }}
+              {...{ isMine, isPrevSame, isNextChange, isLast, isLocal }}
             />
           )
         })}

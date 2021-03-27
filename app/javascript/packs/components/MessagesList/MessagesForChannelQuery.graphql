@@ -1,14 +1,13 @@
 query MessagesForChannel($channelName: String!) {
   messagesForChannel(channelName: $channelName) {
     id
+    localId
     content
     createdAt
     createdBy {
-      id
       nickname
     }
     channel {
-      id
       name
     }
   }

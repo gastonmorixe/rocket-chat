@@ -1,5 +1,6 @@
 class Types::MessageType < Types::BaseObject
     field :id, ID, null: false
+    field :local_id, ID, null: true
     field :content, String, null: false
     field :channel, Types::ChannelType, null: false
     field :created_by, Types::UserType, null: false

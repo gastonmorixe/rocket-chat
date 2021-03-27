@@ -1,6 +1,7 @@
 import * as React from "react"
 import styled from "styled-components"
 import { useMutation } from "@apollo/client"
+import { v4 as uuidv4 } from "uuid"
 
 import CreateMessageMutation from "./CreateMessageMutation.graphql"
 import MessagesForChannelQuery from "../MessagesList/MessagesForChannelQuery.graphql"
@@ -22,25 +23,36 @@ export const NewMessageInput = React.memo<INewMessageInput>((props) => {
     const content = messageInput.value
     messageInput.value = ""
 
+    const localId = uuidv4()
+
     createMessage({
       variables: {
         channelName,
         content,
         nickname,
+        localId,
       },
       optimisticResponse: {
         __typename: "Mutation",
         createMessage: {
           __typename: "Message",
-          // id: null,
-          // createdBy: { nickname },
-          channel: { name: channelName },
-          createdAt: new Date(),
+          id: `${Date.now()}_local`,
+          localId,
           content,
+          createdAt: new Date().toISOString(),
+          createdBy: {
+            __typename: "User",
+            nickname,
+          },
+          channel: {
+            __typename: "Channel",
+            name: channelName,
+          },
         },
       },
       update: (proxy, { data: { createMessage } }) => {
         const data = proxy.readQuery({
+          // pollInterval: 1000,
           query: MessagesForChannelQuery,
           variables: { channelName },
         })
@@ -48,6 +60,7 @@ export const NewMessageInput = React.memo<INewMessageInput>((props) => {
         console.log(`[NewMessageInput] #update`, { data, createMessage })
 
         proxy.writeQuery({
+          // pollInterval: 1000,
           query: MessagesForChannelQuery,
           variables: { channelName },
           data: {

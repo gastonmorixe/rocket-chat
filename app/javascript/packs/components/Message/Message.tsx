@@ -10,7 +10,27 @@ interface IMessage {
   isPrevSame: boolean
   isNextChange: boolean
   isLast: boolean
+  isLocal: boolean
 }
+
+const CreatedAt = React.memo<{ createdAt: string }>((props) => {
+  const { createdAt } = props
+  const [_, setRefresh] = React.useState()
+
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      setRefresh(Date.now())
+    }, 10 * 1000) // Refresh every 10 seconds
+    return () => {
+      clearInterval(interval)
+    }
+  }, [])
+
+  const dateFromNow = dayjs(createdAt).fromNow()
+  return <div className="created-at">{dateFromNow}</div>
+})
+
+CreatedAt.displayName = "CreatedAt"
 
 export const Message = React.memo<IMessage>((props) => {
   console.log(`[Message]`, { props })
@@ -23,18 +43,18 @@ export const Message = React.memo<IMessage>((props) => {
     isLast,
     isPrevSame,
     isNextChange,
+    isLocal,
   } = props
 
-  const dateFromNow = dayjs(createdAt).fromNow()
   const showMeta = (isPrevSame && isNextChange) || isLast
 
   return (
-    <MessageWrapper {...{ isMine, showMeta }}>
+    <MessageWrapper {...{ isMine, showMeta, isLocal }}>
       <div className="content">{content}</div>
       {showMeta && (
         <>
           <div className="author">{authorNickname}</div>
-          <div className="created-at">{dateFromNow}</div>
+          <CreatedAt {...{ createdAt }} />
         </>
       )}
     </MessageWrapper>
@@ -43,7 +63,13 @@ export const Message = React.memo<IMessage>((props) => {
 
 Message.displayName = "Message"
 
-const MessageWrapper = styled.div<{ showMeta: boolean; isMine: boolean }>`
+interface IMessageWrapper {
+  showMeta: boolean
+  isMine: boolean
+  isLocal: boolean
+}
+
+const MessageWrapper = styled.div<IMessageWrapper>`
   display: flex;
   flex-direction: column;
   margin-bottom: ${(p) => (p.showMeta ? "1rem" : "0.1rem")};
@@ -55,6 +81,8 @@ const MessageWrapper = styled.div<{ showMeta: boolean; isMine: boolean }>`
   }
 
   .content {
+    transition: opacity 0.3s ease-in-out;
+    opacity: ${(p) => (p.isLocal ? "0.6" : undefined)};
     background-color: ${(p) =>
       p.isMine ? "rgb(48, 126, 246)" : "rgb(93,200,90)"};
     padding: 0.5rem;

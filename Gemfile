@@ -26,6 +26,7 @@ gem 'sass-rails'
 # Reduces boot times through caching; required in config/boot.rb
 # gem 'bootsnap', '>= 1.4.4', require: false
 gem 'graphql'
+gem 'graphql-batch'
 
 gem 'mongoid', '~> 7.2.1'
 

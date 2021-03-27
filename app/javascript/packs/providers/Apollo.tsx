@@ -9,8 +9,8 @@ const client = new ApolloClient({
   uri: "/graphql",
   cache: new InMemoryCache({
     typePolicies: {
-      Channel: { keyFields: ["id", "name"] },
-      User: { keyFields: ["id", "nickname"] },
+      Channel: { keyFields: ["name"] },
+      User: { keyFields: ["nickname"] },
       Message: { keyFields: ["id"] },
     },
   }),
