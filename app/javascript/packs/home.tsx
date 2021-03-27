@@ -11,8 +11,7 @@ dayjs.extend(relativeTime)
 import { ChatApp } from "./pages"
 
 document.addEventListener("DOMContentLoaded", () => {
-  ReactDOM.render(
-    <ChatApp />,
-    document.body.appendChild(document.createElement("div"))
-  )
+  const root = document.createElement("div")
+  root.id = "root"
+  ReactDOM.render(<ChatApp />, document.body.appendChild(root))
 })

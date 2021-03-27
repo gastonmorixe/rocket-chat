@@ -46,8 +46,13 @@ Message.displayName = "Message"
 const MessageWrapper = styled.div<{ showMeta: boolean; isMine: boolean }>`
   display: flex;
   flex-direction: column;
-  align-self: ${(p) => (p.isMine ? "flex-end" : "flex-start")};
-  margin-bottom: ${(p) => (p.showMeta ? "1rem" : "0.25rem")};
+  margin-bottom: ${(p) => (p.showMeta ? "1rem" : "0.1rem")};
+  text-align: ${(p) => (p.isMine ? "right" : "left")};
+
+  &,
+  & > * {
+    align-self: ${(p) => (p.isMine ? "flex-end" : "flex-start")};
+  }
 
   .content {
     background-color: ${(p) =>
@@ -55,13 +60,17 @@ const MessageWrapper = styled.div<{ showMeta: boolean; isMine: boolean }>`
     padding: 0.5rem;
     border-radius: 10px;
     color: white;
+    max-width: 70ch;
+    margin-bottom: 0.2rem;
   }
 
   .author {
+    color: #888;
     font-size: 0.75rem;
   }
 
   .created-at {
+    color: #888;
     font-size: 0.75rem;
   }
 `

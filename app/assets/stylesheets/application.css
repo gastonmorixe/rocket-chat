@@ -22,9 +22,20 @@ body,
 html {
   margin: 0;
   padding: 0;
+
+  width: 100%;
+  height: 100%;
+  max-height: 100%;
 }
 
 body {
-  margin: 1.5rem;
   font: 16px sans-serif;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  width: 100%;
+  height: 100%;
 }

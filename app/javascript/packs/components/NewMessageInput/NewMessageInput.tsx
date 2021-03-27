@@ -69,7 +69,24 @@ export const NewMessageInput = React.memo<INewMessageInput>((props) => {
 
 NewMessageInput.displayName = "NewMessageInput"
 
-const NewMessageInputWrapper = styled.div<{
-  isMine: boolean
-  isPrevMine: boolean
-}>``
+const NewMessageInputWrapper = styled.div`
+  form {
+  }
+
+  input {
+    width: 100%;
+    border: 0;
+    border-top: 1px solid #ddd;
+    font-size: 1rem;
+    padding: 1rem 1.5rem;
+    border-radius: 0;
+
+    &::placeholder {
+      font-size: 1rem;
+    }
+
+    &:focus {
+      outline: none;
+    }
+  }
+`

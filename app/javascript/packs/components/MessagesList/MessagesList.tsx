@@ -52,5 +52,8 @@ MessagesList.displayName = "MessagesList"
 
 const MessagesListWrapper = styled.div`
   display: flex;
+  flex: 1;
   flex-direction: column;
+  padding: 0.5rem 1.5rem;
+  height: max-content;
 `

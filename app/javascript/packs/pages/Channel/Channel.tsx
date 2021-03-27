@@ -1,5 +1,6 @@
 import * as React from "react"
 import { useParams } from "react-router-dom"
+import styled from "styled-components"
 
 import { MessagesList, NewMessageInput } from "../../components"
 
@@ -17,12 +18,35 @@ export const Channel = React.memo<IChannel>((props) => {
   }
 
   return (
-    <>
-      <h1>{channelName}</h1>
-      <MessagesList {...{ nickname, channelName }} />
+    <ChannelWrapper>
+      <ChannelTitle>{channelName}</ChannelTitle>
+      <MessagesListWrapper>
+        <MessagesList {...{ nickname, channelName }} />
+      </MessagesListWrapper>
       <NewMessageInput {...{ nickname, channelName }} />
-    </>
+    </ChannelWrapper>
   )
 })
 
 Channel.displayName = "Channel"
+
+const ChannelWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  height: 100%;
+  width: 100%;
+  max-height: 100%;
+`
+
+const ChannelTitle = styled.h2`
+  display: flex;
+  padding: 1rem 1.5rem;
+  margin: 0;
+`
+
+const MessagesListWrapper = styled.div`
+  display: flex;
+  flex: 1;
+  overflow-y: auto;
+`
