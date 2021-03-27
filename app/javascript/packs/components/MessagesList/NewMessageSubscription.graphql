@@ -1,0 +1,14 @@
+subscription NewMessage($channelName: String!) {
+  newMessage(channelName: $channelName) {
+    id
+    localId
+    content
+    createdAt
+    channel {
+      name
+    }
+    createdBy {
+      nickname
+    }
+  }
+}

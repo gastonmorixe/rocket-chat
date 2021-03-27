@@ -16,11 +16,22 @@ class CreateMessage < ActiveInteraction::Base
   def execute
     channel = Channel.find_or_create_by(name: channel_name)
     created_by = User.find_or_create_by(nickname: nickname)
-    channel.messages.create(
+    new_message = channel.messages.create(
       content: content,
       created_by: created_by,
       local_id: local_id
     )
+
+    # Send to GraphQL Subscriptions for real-time updates
+    RocketSchema.subscriptions.trigger(
+      :new_message,
+      {
+        channel_name: channel_name
+      },
+      new_message
+    )
+
+    new_message
   end
 end
 

@@ -1,7 +1,12 @@
 class RocketSchema < GraphQL::Schema
+  use GraphQL::Subscriptions::ActionCableSubscriptions
+  use GraphQL::Execution::Interpreter
+  use GraphQL::Analysis::AST
+
   mutation(Types::MutationType)
   query(Types::QueryType)
-  
+  subscription(Types::SubscriptionType)
+
   # use GraphQL::Batch
   
   # Union and Interface Resolution

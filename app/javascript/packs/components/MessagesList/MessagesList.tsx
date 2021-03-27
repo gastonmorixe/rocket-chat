@@ -5,6 +5,7 @@ import { useQuery } from "@apollo/client"
 import { Message } from "../"
 
 import MessagesForChannelQuery from "./MessagesForChannelQuery.graphql"
+import NewMessageSubscription from "./NewMessageSubscription.graphql"
 
 interface IMessagesList {
   nickname: string
@@ -18,11 +19,35 @@ export const MessagesList = React.memo<IMessagesList>((props) => {
 
   const query = useQuery(MessagesForChannelQuery, {
     variables: { channelName },
-    pollInterval: 1000,
+    // pollInterval: 1000,
   })
 
   const ref = React.useRef<HTMLDivElement>()
   const messages = query?.data?.messagesForChannel
+
+  React.useEffect(() => {
+    query.subscribeToMore({
+      document: NewMessageSubscription,
+      variables: { channelName },
+      updateQuery: (prev, options) => {
+        // const { subscriptionData } = options
+        console.log(`[MessageList] [NewMessageSubscription] #updateQuery`, {
+          prev,
+          options,
+        })
+        return prev
+        // if (!subscriptionData.data) return prev;
+        // const newFeedItem = subscriptionData.data.commentAdded;
+        // return Object.assign({}, prev, {
+        //   post: {
+        //     comments: [newFeedItem, ...prev.post.comments]
+        //   }
+      },
+    })
+    return () => {
+      //
+    }
+  }, [])
 
   React.useLayoutEffect(() => {
     if (ref.current) {

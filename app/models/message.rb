@@ -7,4 +7,6 @@ class Message
   
   embedded_in :channel
   belongs_to :created_by, class_name: "User"
+  
+  validates :content, presence: true
 end

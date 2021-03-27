@@ -5,7 +5,6 @@ class ChannelMessages < ActiveInteraction::Base
     presence: true
 
   def execute
-    # includes(:messages)
     channel = Channel.find_or_create_by(name: channel_name)
     channel.messages
   end
