@@ -15,35 +15,54 @@ export const MessagesList = React.memo<IMessagesList>((props) => {
   console.log(`[MessageList]`, { props })
 
   const { nickname, channelName } = props
+
   const query = useQuery(MessagesForChannelQuery, {
     variables: { channelName },
+    pollInterval: 1000,
   })
 
+  const ref = React.useRef<HTMLDivElement>()
+  const messages = query?.data?.messagesForChannel
+
+  React.useLayoutEffect(() => {
+    if (ref.current) {
+      ref.current.scrollTop = ref.current.scrollHeight
+    }
+  }, [messages?.length])
+
   if (query.loading) {
-    return <MessagesListWrapper>Loading messages...</MessagesListWrapper>
+    return (
+      <MessagesListWrapper>
+        <MessagesListContentWrapper>
+          Loading messages...
+        </MessagesListContentWrapper>
+      </MessagesListWrapper>
+    )
   }
 
   return (
-    <MessagesListWrapper>
-      {query.data.messagesForChannel.map((message, index, list) => {
-        const isMine = nickname === message.createdBy.nickname
-        const isPrevSame =
-          index > 0 &&
-          list[index - 1].createdBy.nickname === message.createdBy.nickname
-        const isNextChange =
-          index < list.length - 1 &&
-          list[index + 1].createdBy.nickname !== message.createdBy.nickname
-        const isLast = list.length - 1 === index
-        return (
-          <Message
-            key={message.id}
-            content={message.content}
-            createdAt={new Date(message.createdAt).valueOf()}
-            authorNickname={message.createdBy.nickname}
-            {...{ isMine, isPrevSame, isNextChange, isLast }}
-          />
-        )
-      })}
+    <MessagesListWrapper {...{ ref }}>
+      <MessagesListContentWrapper>
+        {messages.map((message, index, list) => {
+          const isMine = nickname === message.createdBy.nickname
+          const isPrevSame =
+            index > 0 &&
+            list[index - 1].createdBy.nickname === message.createdBy.nickname
+          const isNextChange =
+            index < list.length - 1 &&
+            list[index + 1].createdBy.nickname !== message.createdBy.nickname
+          const isLast = list.length - 1 === index
+          return (
+            <Message
+              key={message.id}
+              content={message.content}
+              createdAt={new Date(message.createdAt).valueOf()}
+              authorNickname={message.createdBy.nickname}
+              {...{ isMine, isPrevSame, isNextChange, isLast }}
+            />
+          )
+        })}
+      </MessagesListContentWrapper>
     </MessagesListWrapper>
   )
 })
@@ -51,6 +70,12 @@ export const MessagesList = React.memo<IMessagesList>((props) => {
 MessagesList.displayName = "MessagesList"
 
 const MessagesListWrapper = styled.div`
+  display: flex;
+  flex: 1;
+  overflow-y: auto;
+`
+
+const MessagesListContentWrapper = styled.div`
   display: flex;
   flex: 1;
   flex-direction: column;

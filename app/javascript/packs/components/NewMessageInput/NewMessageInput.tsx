@@ -32,20 +32,21 @@ export const NewMessageInput = React.memo<INewMessageInput>((props) => {
         __typename: "Mutation",
         createMessage: {
           __typename: "Message",
+          // id: null,
           // createdBy: { nickname },
-          // channel: { name: channelName },
-          // createdAt: new Date(),
+          channel: { name: channelName },
+          createdAt: new Date(),
           content,
         },
       },
       update: (proxy, { data: { createMessage } }) => {
-        // Read the data from our cache for this query.
         const data = proxy.readQuery({
           query: MessagesForChannelQuery,
           variables: { channelName },
         })
-        // Write our data back to the cache with the new comment in it
-        console.log(`[NewMessageInput]`, { data, createMessage })
+
+        console.log(`[NewMessageInput] #update`, { data, createMessage })
+
         proxy.writeQuery({
           query: MessagesForChannelQuery,
           variables: { channelName },

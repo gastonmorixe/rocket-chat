@@ -20,9 +20,7 @@ export const Channel = React.memo<IChannel>((props) => {
   return (
     <ChannelWrapper>
       <ChannelTitle>{channelName}</ChannelTitle>
-      <MessagesListWrapper>
-        <MessagesList {...{ nickname, channelName }} />
-      </MessagesListWrapper>
+      <MessagesList {...{ nickname, channelName }} />
       <NewMessageInput {...{ nickname, channelName }} />
     </ChannelWrapper>
   )
@@ -43,10 +41,4 @@ const ChannelTitle = styled.h2`
   display: flex;
   padding: 1rem 1.5rem;
   margin: 0;
-`
-
-const MessagesListWrapper = styled.div`
-  display: flex;
-  flex: 1;
-  overflow-y: auto;
 `
