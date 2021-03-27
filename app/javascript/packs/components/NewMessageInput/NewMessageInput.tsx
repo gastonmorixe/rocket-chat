@@ -3,6 +3,7 @@ import styled from "styled-components"
 import { useMutation } from "@apollo/client"
 
 import CreateMessageMutation from "./CreateMessageMutation.graphql"
+import MessagesForChannelQuery from "../MessagesList/MessagesForChannelQuery.graphql"
 
 interface INewMessageInput {
   nickname: string
@@ -13,7 +14,7 @@ export const NewMessageInput = React.memo<INewMessageInput>((props) => {
   console.log(`[NewMessageInput]`, { props })
 
   const { channelName, nickname } = props
-  const [createMessage, result] = useMutation(CreateMessageMutation)
+  const [createMessage, result] = useMutation(CreateMessageMutation, {})
 
   const onSubmit = React.useCallback((ev) => {
     ev.preventDefault()
@@ -26,6 +27,33 @@ export const NewMessageInput = React.memo<INewMessageInput>((props) => {
         channelName,
         content,
         nickname,
+      },
+      optimisticResponse: {
+        __typename: "Mutation",
+        createMessage: {
+          __typename: "Message",
+          // createdBy: { nickname },
+          // channel: { name: channelName },
+          // createdAt: new Date(),
+          content,
+        },
+      },
+      update: (proxy, { data: { createMessage } }) => {
+        // Read the data from our cache for this query.
+        const data = proxy.readQuery({
+          query: MessagesForChannelQuery,
+          variables: { channelName },
+        })
+        // Write our data back to the cache with the new comment in it
+        console.log(`[NewMessageInput]`, { data, createMessage })
+        proxy.writeQuery({
+          query: MessagesForChannelQuery,
+          variables: { channelName },
+          data: {
+            ...data,
+            messagesForChannel: [...data.messagesForChannel, createMessage],
+          },
+        })
       },
     })
   }, [])

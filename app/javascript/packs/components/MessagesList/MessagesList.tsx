@@ -4,7 +4,7 @@ import { useQuery } from "@apollo/client"
 
 import { Message } from "../"
 
-import MessageListQuery from "./MessageListQuery.graphql"
+import MessagesForChannelQuery from "./MessagesForChannelQuery.graphql"
 
 interface IMessagesList {
   nickname: string
@@ -15,7 +15,7 @@ export const MessagesList = React.memo<IMessagesList>((props) => {
   console.log(`[MessageList]`, { props })
 
   const { nickname, channelName } = props
-  const query = useQuery(MessageListQuery, {
+  const query = useQuery(MessagesForChannelQuery, {
     variables: { channelName },
   })
 

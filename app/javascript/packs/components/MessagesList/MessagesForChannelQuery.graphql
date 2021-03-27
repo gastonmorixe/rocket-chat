@@ -7,5 +7,9 @@ query MessagesForChannel($channelName: String!) {
       id
       nickname
     }
+    channel {
+      id
+      name
+    }
   }
 }

@@ -77,7 +77,7 @@ module.exports = function (api) {
           async: false,
         },
       ],
-      "import-graphql",
+      ["import-graphql", { emitDeclarations: true }],
       isProductionEnv && [
         "babel-plugin-transform-react-remove-prop-types",
         {
