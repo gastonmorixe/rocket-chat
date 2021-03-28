@@ -46,7 +46,8 @@ export const Message = React.memo<IMessage>((props) => {
     isLocal,
   } = props
 
-  const showMeta = (isPrevSame && isNextChange) || isLast
+  // const showMeta = (isPrevSame && isNextChange) || isLast
+  const showMeta = isNextChange || isLast
 
   return (
     <MessageWrapper {...{ isMine, showMeta, isLocal }}>
