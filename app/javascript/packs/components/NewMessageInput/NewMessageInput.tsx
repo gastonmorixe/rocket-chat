@@ -26,7 +26,7 @@ const useNewMessageLogic = (options: INewMessageInput) => {
       console.log(`[NewMessageInput] #setUserIsTypingThrottled #cb`)
       setUserIsTyping()
     }
-    return throttle(cb, 1000, { leading: true, trailing: true })
+    return throttle(cb, 1000, { leading: true, trailing: false })
   }, [setUserIsTyping])
 
   const onInput = React.useCallback((ev) => {

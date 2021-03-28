@@ -4,6 +4,7 @@ import { useSubscription, useMutation } from "@apollo/client"
 
 import UserInChannelTypingMutation from "./UserInChannelTypingMutation.graphql"
 import UserTypingForChannelSubscription from "./UserTypingForChannelSubscription.graphql"
+import NewMessageSubscription from "../MessagesList/NewMessageSubscription.graphql"
 
 interface ITypingIndicator {
   nickname: string
@@ -23,20 +24,40 @@ export const useSetUserIsTyping = (options: {
 
 interface ISubscriptionCall {
   channelName: string
-  onSubscriptionData: (subscriptionData: unknown) => unknown
+  onUserTyping: (subscriptionData: unknown) => unknown
+  onNewMessage: (subscriptionData: unknown) => unknown
 }
 
 const SubscriptionCall = React.memo<ISubscriptionCall>((props) => {
-  const { onSubscriptionData, channelName } = props
+  const { onUserTyping, onNewMessage, channelName } = props
+
+  useSubscription(NewMessageSubscription, {
+    variables: { channelName },
+    onSubscriptionData: (options) => {
+      const { client, subscriptionData } = options
+      console.log(
+        "[SubscriptionCall] #NewMessageSubscription #onSubscriptionData",
+        {
+          client,
+          subscriptionData,
+        }
+      )
+      onNewMessage(subscriptionData)
+    },
+  })
+
   useSubscription(UserTypingForChannelSubscription, {
     variables: { channelName },
     onSubscriptionData: (options) => {
       const { client, subscriptionData } = options
-      console.log("[SubscriptionCall] [onSubscriptionData]", {
-        client,
-        subscriptionData,
-      })
-      onSubscriptionData(subscriptionData)
+      console.log(
+        "[SubscriptionCall] #UserTypingForChannelSubscription #onSubscriptionData",
+        {
+          client,
+          subscriptionData,
+        }
+      )
+      onUserTyping(subscriptionData)
     },
   })
   return null
@@ -53,11 +74,41 @@ export const TypingIndicator = React.memo<ITypingIndicator>((props) => {
     return {} as Record<string, ReturnType<typeof setTimeout>>
   })
 
-  const onSubscriptionData = React.useCallback(
+  const onNewMessage = React.useCallback((subscriptionData) => {
+    console.log("[TypingIndicator] [onNewMessage]", {
+      subscriptionData,
+    })
+    const newMessage = subscriptionData?.data?.newMessage
+    const newMessageCreatedByNickname = newMessage?.createdBy?.nickname
+
+    if (!newMessageCreatedByNickname) {
+      console.log("[TypingIndicator] #onNewMessage skipping missing nickname")
+      return
+    }
+
+    // Remove nickname from typing list when new message from them arrives.
+    setTimeout(() => {
+      setParticipants((list) => {
+        if (Object.keys(list).includes(newMessageCreatedByNickname)) {
+          clearTimeout(list[newMessageCreatedByNickname])
+          delete list[newMessageCreatedByNickname]
+          console.log("[Typingindicator] #onNewMessage delete participant", {
+            newMessageCreatedByNickname,
+            list,
+          })
+          return { ...list }
+        }
+        return list
+      })
+    }, 100) // delay a bit to account for network delays
+  }, [])
+
+  const onUserTyping = React.useCallback(
     (subscriptionData) => {
-      console.log("[TypingIndicator] [onSubscriptionData]", {
+      console.log("[TypingIndicator] [onUserTyping]", {
         subscriptionData,
       })
+
       const typingNickname =
         subscriptionData?.data?.userTypingForChannel?.createdBy?.nickname
 
@@ -65,6 +116,11 @@ export const TypingIndicator = React.memo<ITypingIndicator>((props) => {
         console.log(
           "[TypingIndicator] #onSubscriptionData missing typingNickname"
         )
+        return
+      }
+
+      // Skip current user
+      if (typingNickname === nickname) {
         return
       }
 
@@ -104,7 +160,7 @@ export const TypingIndicator = React.memo<ITypingIndicator>((props) => {
 
   return (
     <>
-      <SubscriptionCall {...{ onSubscriptionData, channelName }} />
+      <SubscriptionCall {...{ onUserTyping, onNewMessage, channelName }} />
       {show && (
         <TypingIndicatorWrapper>
           <TypingIndicatorContentWrapper>
