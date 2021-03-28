@@ -11,12 +11,12 @@ class GraphqlChannel < ApplicationCable::Channel
       channel: self,
     }
 
-    result = RocketSchema.execute({
+    result = RocketSchema.execute(
       query: query,
       context: context,
       variables: variables,
       operation_name: operation_name
-    })
+    )
 
     payload = {
       result: result.to_h,
@@ -32,7 +32,7 @@ class GraphqlChannel < ApplicationCable::Channel
 
   def unsubscribed
     @subscription_ids.each { |sid|
-    RocketSchema.subscriptions.delete_subscription(sid)
+      RocketSchema.subscriptions.delete_subscription(sid)
     }
   end
 

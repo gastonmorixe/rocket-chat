@@ -28,7 +28,19 @@ class CreateMessage < ActiveInteraction::Base
       {
         channel_name: channel_name
       },
-      new_message
+      { 
+        # This obj needs to be serializable
+        id: new_message.id.to_s, 
+        local_id: new_message.local_id,
+        content: new_message.content,
+        created_at: new_message.created_at,
+        channel: {
+          name: new_message.channel.name,
+        },
+        created_by: {
+          nickname: new_message.created_by.nickname,
+        },
+      }
     )
 
     new_message

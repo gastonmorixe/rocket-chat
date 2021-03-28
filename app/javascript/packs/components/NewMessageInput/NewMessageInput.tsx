@@ -52,7 +52,6 @@ export const NewMessageInput = React.memo<INewMessageInput>((props) => {
       },
       update: (proxy, { data: { createMessage } }) => {
         const data = proxy.readQuery({
-          // pollInterval: 1000,
           query: MessagesForChannelQuery,
           variables: { channelName },
         })
@@ -60,7 +59,6 @@ export const NewMessageInput = React.memo<INewMessageInput>((props) => {
         console.log(`[NewMessageInput] #update`, { data, createMessage })
 
         proxy.writeQuery({
-          // pollInterval: 1000,
           query: MessagesForChannelQuery,
           variables: { channelName },
           data: {

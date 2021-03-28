@@ -30,22 +30,25 @@ export const MessagesList = React.memo<IMessagesList>((props) => {
       document: NewMessageSubscription,
       variables: { channelName },
       updateQuery: (prev, options) => {
-        // const { subscriptionData } = options
+        const { subscriptionData } = options
         console.log(`[MessageList] [NewMessageSubscription] #updateQuery`, {
           prev,
           options,
         })
-        return prev
-        // if (!subscriptionData.data) return prev;
-        // const newFeedItem = subscriptionData.data.commentAdded;
-        // return Object.assign({}, prev, {
-        //   post: {
-        //     comments: [newFeedItem, ...prev.post.comments]
-        //   }
+        if (!subscriptionData?.data) return prev
+        const newMessage = subscriptionData.data.newMessage
+        if (newMessage.createdBy.nickname === nickname) {
+          return prev
+        }
+        const newList = {
+          ...prev,
+          messagesForChannel: [...prev.messagesForChannel, newMessage],
+        }
+        return newList
       },
     })
     return () => {
-      //
+      // Unsubscribe
     }
   }, [])
 

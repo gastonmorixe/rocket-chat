@@ -1,8 +1,8 @@
 class Types::MessageType < Types::BaseObject
-    field :id, ID, null: false
-    field :local_id, ID, null: true
-    field :content, String, null: false
-    field :channel, Types::ChannelType, null: false
-    field :created_by, Types::UserType, null: false
-    field :created_at, GraphQL::Types::ISO8601DateTime, null: false
+  field :id, ID, null: false
+  field :local_id, ID, null: true
+  field :content, String, null: false
+  field :channel, Types::ChannelType, null: false
+  field :created_by, Types::UserType, null: false
+  field :created_at, GraphQL::Types::ISO8601DateTime, null: false
 end
