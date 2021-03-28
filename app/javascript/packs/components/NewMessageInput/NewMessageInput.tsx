@@ -98,7 +98,12 @@ export const NewMessageInput = React.memo<INewMessageInput>((props) => {
   return (
     <NewMessageInputWrapper>
       <form {...{ onSubmit }}>
-        <input type="text" placeholder="Type a message..." {...{ onInput }} />
+        <input
+          autoFocus
+          type="text"
+          placeholder="Type a message..."
+          {...{ onInput }}
+        />
       </form>
     </NewMessageInputWrapper>
   )
