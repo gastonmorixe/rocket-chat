@@ -49,6 +49,10 @@ module.exports = function (api) {
     plugins: [
       "babel-plugin-macros",
       "@babel/plugin-syntax-dynamic-import",
+      isProductionEnv && [
+        "transform-remove-console",
+        { exclude: ["error", "warn"] },
+      ],
       isTestEnv && "babel-plugin-dynamic-import-node",
       "@babel/plugin-transform-destructuring",
       [
