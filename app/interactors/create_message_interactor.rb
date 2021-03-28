@@ -1,4 +1,4 @@
-class CreateMessage < ActiveInteraction::Base
+class CreateMessageInteractor < ActiveInteraction::Base
   string :content
   string :channel_name
   string :nickname

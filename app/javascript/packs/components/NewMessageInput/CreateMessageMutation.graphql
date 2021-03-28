@@ -1,14 +1,16 @@
 mutation CreateMessage(
   $channelName: String!
   $content: String!
-  $nickname: ID!
+  $nickname: String!
   $localId: ID!
 ) {
   createMessage(
-    channelName: $channelName
-    content: $content
-    nickname: $nickname
-    localId: $localId
+    input: {
+      channelName: $channelName
+      content: $content
+      nickname: $nickname
+      localId: $localId
+    }
   ) {
     id
     localId

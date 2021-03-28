@@ -1,0 +1,16 @@
+mutation UserInChannelTypingMutation(
+  $channelName: String!
+  $nickname: String!
+) {
+  userInChannelTyping(
+    input: { channelName: $channelName, nickname: $nickname }
+  ) {
+    dateTime
+    createdBy {
+      nickname
+    }
+    channel {
+      name
+    }
+  }
+}

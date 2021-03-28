@@ -1,4 +1,4 @@
-class ChannelMessages < ActiveInteraction::Base
+class ChannelMessagesInteractor < ActiveInteraction::Base
   string :channel_name
 
   validates :channel_name,

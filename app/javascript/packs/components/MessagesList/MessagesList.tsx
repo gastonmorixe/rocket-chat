@@ -31,12 +31,12 @@ export const MessagesList = React.memo<IMessagesList>((props) => {
       variables: { channelName },
       updateQuery: (prev, options) => {
         const { subscriptionData } = options
-        console.log(`[MessageList] [NewMessageSubscription] #updateQuery`, {
+        console.log(`[MessageList] [NewMessageSubscription2] #updateQuery`, {
           prev,
           options,
         })
-        if (!subscriptionData?.data) return prev
-        const newMessage = subscriptionData.data.newMessage
+        const newMessage = subscriptionData?.data?.newMessage
+        if (!newMessage) return prev
         if (newMessage.createdBy.nickname === nickname) {
           return prev
         }

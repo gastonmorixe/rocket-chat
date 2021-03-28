@@ -36,6 +36,7 @@ const client = new ApolloClient({
       Channel: { keyFields: ["name"] },
       User: { keyFields: ["nickname"] },
       Message: { keyFields: ["id"] },
+      TypingType: { keyFields: [] }, // "id", "createdBy", "channel.name"
     },
   }),
 })

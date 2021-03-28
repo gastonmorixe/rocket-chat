@@ -2,7 +2,11 @@ import * as React from "react"
 import { useParams } from "react-router-dom"
 import styled from "styled-components"
 
-import { MessagesList, NewMessageInput } from "../../components"
+import {
+  MessagesList,
+  NewMessageInput,
+  TypingIndicator,
+} from "../../components"
 
 interface IChannel {
   channelName: string
@@ -21,6 +25,7 @@ export const Channel = React.memo<IChannel>((props) => {
     <ChannelWrapper>
       <ChannelTitle>{channelName}</ChannelTitle>
       <MessagesList {...{ nickname, channelName }} />
+      <TypingIndicator {...{ nickname, channelName }} />
       <NewMessageInput {...{ nickname, channelName }} />
     </ChannelWrapper>
   )

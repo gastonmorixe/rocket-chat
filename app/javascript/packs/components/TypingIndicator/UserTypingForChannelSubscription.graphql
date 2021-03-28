@@ -1,0 +1,11 @@
+subscription UserTypingForChannelSubscription($channelName: String!) {
+  userTypingForChannel(channelName: $channelName) {
+    dateTime
+    createdBy {
+      nickname
+    }
+    channel {
+      name
+    }
+  }
+}

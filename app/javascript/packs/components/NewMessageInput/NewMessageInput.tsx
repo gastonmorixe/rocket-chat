@@ -2,6 +2,9 @@ import * as React from "react"
 import styled from "styled-components"
 import { useMutation } from "@apollo/client"
 import { v4 as uuidv4 } from "uuid"
+import throttle from "lodash/throttle"
+
+import { useSetUserIsTyping } from "../TypingIndicator"
 
 import CreateMessageMutation from "./CreateMessageMutation.graphql"
 import MessagesForChannelQuery from "../MessagesList/MessagesForChannelQuery.graphql"
@@ -11,11 +14,25 @@ interface INewMessageInput {
   channelName: string
 }
 
-export const NewMessageInput = React.memo<INewMessageInput>((props) => {
-  console.log(`[NewMessageInput]`, { props })
+const useNewMessageLogic = (options: INewMessageInput) => {
+  const { channelName, nickname } = options
 
-  const { channelName, nickname } = props
   const [createMessage, result] = useMutation(CreateMessageMutation, {})
+  const setUserIsTyping = useSetUserIsTyping({ nickname, channelName })
+
+  const setUserIsTypingThrottled = React.useMemo(() => {
+    console.log(`[NewMessageInput] #setUserIsTypingThrottled`)
+    const cb = () => {
+      console.log(`[NewMessageInput] #setUserIsTypingThrottled #cb`)
+      setUserIsTyping()
+    }
+    return throttle(cb, 1000, { leading: true, trailing: true })
+  }, [setUserIsTyping])
+
+  const onInput = React.useCallback((ev) => {
+    console.log("[NewMessageInput] #onInput")
+    setUserIsTypingThrottled()
+  }, [])
 
   const onSubmit = React.useCallback((ev) => {
     ev.preventDefault()
@@ -70,10 +87,18 @@ export const NewMessageInput = React.memo<INewMessageInput>((props) => {
     })
   }, [])
 
+  return { onSubmit, onInput }
+}
+
+export const NewMessageInput = React.memo<INewMessageInput>((props) => {
+  console.log(`[NewMessageInput]`, { props })
+
+  const { onSubmit, onInput } = useNewMessageLogic(props)
+
   return (
     <NewMessageInputWrapper>
       <form {...{ onSubmit }}>
-        <input type="text" placeholder="Type a message..." />
+        <input type="text" placeholder="Type a message..." {...{ onInput }} />
       </form>
     </NewMessageInputWrapper>
   )
@@ -92,6 +117,8 @@ const NewMessageInputWrapper = styled.div`
     font-size: 1rem;
     padding: 1rem 1.5rem;
     border-radius: 0;
+    -webkit-appearance: none;
+    appearance: none;
 
     &::placeholder {
       font-size: 1rem;
